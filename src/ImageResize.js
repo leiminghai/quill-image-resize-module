@@ -37,6 +37,7 @@ export default class ImageResize {
 
         // respond to clicks inside the editor
         this.quill.root.addEventListener('click', this.handleClick, false);
+        this.quill.root.addEventListener('mscontrolselect', this.handleClick, false); //IE 11 support
 
         this.quill.root.parentNode.style.position = this.quill.root.parentNode.style.position || 'relative';
 
@@ -93,6 +94,7 @@ export default class ImageResize {
             }
             // clicked on an image inside the editor
             this.show(evt.target);
+            evt.preventDefault(); //Prevent IE 11 drag handles appearing
         } else if (this.img) {
             // clicked on a non image
             this.hide();
@@ -196,5 +198,29 @@ export default class ImageResize {
 }
 
 if (window.Quill) {
+	
+  //Add support for IE 11
+	if (typeof Object.assign != 'function') {
+	  Object.assign = function(target) {
+	    'use strict';
+	    if (target == null) {
+	      throw new TypeError('Cannot convert undefined or null to object');
+	    }
+
+	    target = Object(target);
+	    for (var index = 1; index < arguments.length; index++) {
+	      var source = arguments[index];
+	      if (source != null) {
+	        for (var key in source) {
+	          if (Object.prototype.hasOwnProperty.call(source, key)) {
+	            target[key] = source[key];
+	          }
+	        }
+	      }
+	    }
+	    return target;
+	  };
+	}
+	
     window.Quill.register('modules/imageResize', ImageResize);
 }
