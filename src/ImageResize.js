@@ -38,6 +38,7 @@ export default class ImageResize {
         // respond to clicks inside the editor
         this.quill.root.addEventListener('click', this.handleClick, false);
         this.quill.root.addEventListener('mscontrolselect', this.handleClick, false); //IE 11 support
+        this.quill.root.addEventListener('scroll', this.handleScroll, false);
 
         this.quill.root.parentNode.style.position = this.quill.root.parentNode.style.position || 'relative';
 
@@ -100,7 +101,13 @@ export default class ImageResize {
             this.hide();
         }
     };
-
+	
+    handleScroll = (evt) => {
+		//Hide the overlay when the editor is scrolled, 
+		//otherwise image is no longer correctly aligned with overlay
+        this.hide();
+    };
+	
     show = (img) => {
         // keep track of this img element
         this.img = img;
