@@ -61,6 +61,8 @@ export class Resize extends BaseModule {
         this.dragStartX = evt.clientX;
         // store the width before the drag
         this.preDragWidth = this.img.width || this.img.naturalWidth;
+        // store the height before the drag
+        this.preDragHeight = this.img.height || this.img.naturalHeight;		
         // set the proper cursor everywhere
         this.setCursor(this.dragBox.style.cursor);
         // listen for movement and mouseup
@@ -83,14 +85,19 @@ export class Resize extends BaseModule {
         }
         // update image size
         const deltaX = evt.clientX - this.dragStartX;
-        if (this.dragBox === this.boxes[0] || this.dragBox === this.boxes[3]) {
-            // left-side resize handler; dragging right shrinks image
-            this.img.width = Math.round(this.preDragWidth - deltaX);
-        } else {
-            // right-side resize handler; dragging right enlarges image
-            this.img.width = Math.round(this.preDragWidth + deltaX);
+        if (Math.round(deltaX) !== 0) {
+            var originalRatio = this.preDragWidth / this.preDragHeight;
+            if (this.dragBox === this.boxes[0] || this.dragBox === this.boxes[3]) {
+                // left-side resize handler; dragging right shrinks image
+                this.img.width = Math.round(this.preDragWidth - deltaX);
+            } else {
+                // right-side resize handler; dragging right enlarges image
+                this.img.width = Math.round(this.preDragWidth + deltaX);
+            }
+            //Ensure sure image aspect ratio is kept after resize
+            this.img.height = Math.round(this.img.width / originalRatio);			
+            this.requestUpdate();
         }
-        this.requestUpdate();
     };
 
     setCursor = (value) => {
