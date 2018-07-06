@@ -83,6 +83,10 @@ export class Resize extends BaseModule {
             // image not set yet
             return;
         }
+        if (!this.quill.root.parentElement.contains(evt.target)) {
+            // drag outside of quill container
+            return;
+        }   
         // update image size
         const deltaX = evt.clientX - this.dragStartX;
         if (Math.round(deltaX) !== 0) {
